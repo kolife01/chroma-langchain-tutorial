@@ -7,10 +7,10 @@ from langchain.document_loaders import TextLoader
 from typing import List
 from langchain.schema import Document
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
-
-os.environ['OPENAI_API_KEY'] = "your-api-key"
-
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 class Genie:
 
@@ -20,7 +20,7 @@ class Genie:
         self.documents = self.loader.load()
         self.texts = self.text_split(self.documents)
         self.vectordb = self.embeddings(self.texts)
-        self.genie = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type="stuff", retriever=self.vectordb.as_retriever())
+        self.genie = RetrievalQA.from_chain_type(llm=OpenAI(openai_api_key=openai_api_key), chain_type="stuff", retriever=self.vectordb.as_retriever())
 
     @staticmethod
     def text_split(documents: TextLoader):
